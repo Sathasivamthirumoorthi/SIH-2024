@@ -1,8 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { EngagementScoreProps } from '@/models/engagementScore';
-import { InstutionDetailsInterface } from '@/models/InstutionDetails';
+import { EngagementScoreProps } from '@/models/engagementscore';
 import { Stack } from '@mui/system';
 
 import { EngagementScore } from '../common/engagement-score';
@@ -16,7 +15,7 @@ export function InstutionDetails({ instutionId }: InstutionDetailsProps): React.
   };
   let [engagementScoreProps, SetEngagementScoreProps] =
     React.useState<EngagementScoreProps>(defaultEngagementScoreProps);
-    
+
   return (
     <>
       <Stack>
