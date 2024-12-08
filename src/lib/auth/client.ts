@@ -1,5 +1,7 @@
 'use client';
 
+import apiClient from '@/utils/api';
+
 import type { User } from '@/types/user';
 
 function generateToken(): string {
@@ -14,6 +16,7 @@ const user = {
   firstName: 'Sofia',
   lastName: 'Rivers',
   email: 'sofia@devias.io',
+  role: '',
 } satisfies User;
 
 export interface SignUpParams {
@@ -36,6 +39,11 @@ export interface ResetPasswordParams {
   email: string;
 }
 
+export interface LoggedInUser {
+  email: string;
+  role: 'regulatoryBody' | 'instution';
+}
+
 class AuthClient {
   async signUp(_: SignUpParams): Promise<{ error?: string }> {
     // Make API request
@@ -55,15 +63,23 @@ class AuthClient {
     const { email, password } = params;
 
     // Make API request
+    try {
+      // await apiClient.post('/institutions/', );
+      // We do not handle the API, so we'll check if the credentials match with the hardcoded ones.
+      if (email !== 'sofia@devias.io' || password !== 'Secret1') {
+        return { error: 'Invalid credentials' };
+      }
 
-    // We do not handle the API, so we'll check if the credentials match with the hardcoded ones.
-    if (email !== 'sofia@devias.io' || password !== 'Secret1') {
+      let loggedInUser: LoggedInUser = {
+        email: 'sofia@devias.io',
+        role: 'regulatoryBody',
+      };
+      const token = generateToken();
+      localStorage.setItem('custom-auth-token', token);
+      localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser));
+    } catch (error) {
       return { error: 'Invalid credentials' };
     }
-
-    const token = generateToken();
-    localStorage.setItem('custom-auth-token', token);
-
     return {};
   }
 
@@ -80,16 +96,27 @@ class AuthClient {
 
     // We do not handle the API, so just check if we have a token in localStorage.
     const token = localStorage.getItem('custom-auth-token');
-
+    const useDetail = localStorage.getItem('loggedInUser');
     if (!token) {
       return { data: null };
     }
+    if (useDetail) {
+      const user: User = JSON.parse(useDetail);
 
-    return { data: user };
+      // Ensure the parsed object contains the expected fields
+      if (!user?.email || !user?.role) {
+        return { data: null, error: 'Invalid user details in storage' };
+      }
+
+      return { data: user };
+    }
+    // Parse the user details from JSON
+    return { data: null };
   }
 
   async signOut(): Promise<{ error?: string }> {
     localStorage.removeItem('custom-auth-token');
+    localStorage.removeItem('loggedInUser');
 
     return {};
   }

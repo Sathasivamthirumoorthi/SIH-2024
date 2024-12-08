@@ -16,14 +16,6 @@ export function InstutionDetails({ instutionId }: InstutionDetailsProps): React.
   let [engagementScoreProps, SetEngagementScoreProps] =
     React.useState<EngagementScoreProps>(defaultEngagementScoreProps);
 
-  React.useEffect(() => {
-    console.log(instutionId);
-    // api logic goes here
-    SetEngagementScoreProps({
-      score: '22.22',
-    });
-  }, []);
-
   return (
     <>
       <Stack>
