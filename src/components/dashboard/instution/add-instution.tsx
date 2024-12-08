@@ -2,6 +2,8 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
+import { AddInstitutionRequest } from '@/models/InstutionDetails';
+import apiClient from '@/utils/api';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
@@ -27,22 +29,14 @@ export function AddInstitution(): React.JSX.Element {
   const router = useRouter();
   const handleFormSubmit = async (values: { name: string; location: string; email: string }) => {
     try {
-      console.log('Form values:', values);
-      // api goes here...
-      // Example API call
-      // const response = await fetch('/api/institutions', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify(values),
-      // });
-
-      // if (response.ok) {
-      //   console.log('Institution added successfully!');
-      // } else {
-      //   console.error('Failed to add institution:', response.statusText);
-      // }
+      const instutionRequestObject: AddInstitutionRequest = {
+        name: values.name,
+        location: values.location,
+        email: values.email,
+      };
+      await apiClient.post('/institutions/', instutionRequestObject);
+      console.log('instution created');
+      router.push(paths.dashboard.instutions.overview);
     } catch (error) {
       console.error('Error during form submission:', error);
     }
