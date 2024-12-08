@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
 import { InstutionDetailsInterface } from '@/models/InstutionDetails';
-import { Button } from '@mui/material';
+import { Button, Chip } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -25,6 +25,11 @@ import { useSelection } from '@/hooks/use-selection';
 function noop(): void {
   // do nothing
 }
+const statusMap = {
+  poor: { label: 'Poor', color: 'error' },
+  avarage: { label: 'Avarage', color: 'warning' },
+  excelent: { label: 'Excelent', color: 'success' },
+} as const;
 
 interface InstutionsTableProps {
   count?: number;
@@ -83,6 +88,7 @@ export function InstutionsTable({
           <TableBody>
             {rows.map((row) => {
               const isSelected = selected?.has(row.uid);
+              const { label, color } = statusMap['excelent'] ?? { label: 'Unknown', color: 'default' };
 
               return (
                 <TableRow hover key={row.uid} selected={isSelected}>
@@ -103,7 +109,9 @@ export function InstutionsTable({
                       <Typography variant="subtitle2">{row.name}</Typography>
                     </Stack>
                   </TableCell>
-                  <TableCell>{row.status}</TableCell>
+                  <TableCell>
+                    <Chip color={color} label={label} size="small" />
+                  </TableCell>
                   <TableCell>{row.location}</TableCell>
                   <TableCell>
                     <Button onClick={() => onHandleViewDetails(row.uid)} variant="contained">
