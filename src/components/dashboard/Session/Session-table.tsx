@@ -17,17 +17,11 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 
-
-
 import { paths } from '@/paths';
 import { useSelection } from '@/hooks/use-selection';
 
-
-
-
-
 export interface Session {
-  id: string;
+  uid: string;
   trainer_ids: string[];
   institution_id: string;
   name: string;
@@ -53,7 +47,7 @@ export function SessionTable({
 
   const router = useRouter();
 
-  const rowIds = React.useMemo(() => sessions.map((session) => session.id), [sessions]);
+  const rowIds = React.useMemo(() => sessions.map((session) => session.uid), [sessions]);
   const { selectAll, deselectAll, selectOne, deselectOne, selected } = useSelection(rowIds);
 
   const selectedSome = (selected?.size ?? 0) > 0 && (selected?.size ?? 0) < sessions.length;
@@ -65,7 +59,7 @@ export function SessionTable({
       setError(null);
 
       try {
-        const response = await apiClient.get('https://sih-2024-backend-o83c.onrender.com/api/v1/sessions');
+        const response = await apiClient.get('/sessions');
         setSessions(response.data); // Assuming response data is an array of sessions
       } catch (err: any) {
         setError(err.message || 'Failed to fetch sessions');
@@ -109,28 +103,25 @@ export function SessionTable({
                 />
               </TableCell>
               <TableCell>Name</TableCell>
-              <TableCell>Institution</TableCell>
               <TableCell>Trainer IDs</TableCell>
               <TableCell>Number of Slots</TableCell>
-              <TableCell>Average English Score</TableCell>
-              <TableCell>Slots</TableCell>
               <TableCell>Details</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {sessions.map((session) => {
-              const isSelected = selected?.has(session.id);
+              const isSelected = selected?.has(session.uid);
 
               return (
-                <TableRow hover key={session.id} selected={isSelected}>
+                <TableRow hover key={session.uid} selected={isSelected}>
                   <TableCell padding="checkbox">
                     <Checkbox
                       checked={isSelected}
                       onChange={(event) => {
                         if (event.target.checked) {
-                          selectOne(session.id);
+                          selectOne(session.uid);
                         } else {
-                          deselectOne(session.id);
+                          deselectOne(session.uid);
                         }
                       }}
                     />
@@ -140,13 +131,10 @@ export function SessionTable({
                       <Typography variant="subtitle2">{session.name}</Typography>
                     </Stack>
                   </TableCell>
-                  <TableCell>{session.institution_id}</TableCell>
                   <TableCell>{session.trainer_ids.join(', ')}</TableCell>
                   <TableCell>{session.no_of_slots}</TableCell>
-                  <TableCell>{session.average_eng_score}</TableCell>
-                  <TableCell>{session.slots.join(', ')}</TableCell>
                   <TableCell>
-                    <Button onClick={() => onHandleViewDetails(session.id)} variant="contained">
+                    <Button onClick={() => onHandleViewDetails(session.uid)} variant="contained">
                       View Details
                     </Button>
                   </TableCell>
