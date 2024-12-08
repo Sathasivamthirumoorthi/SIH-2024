@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { EngagementScoreProps } from '@/models/engagementScore';
 import { Slot } from '@/models/Slot';
-import { Stack, Typography } from '@mui/material';
+import { Button, Stack, TextField, Typography } from '@mui/material';
 
 import { EngagementScore } from '../common/engagement-score';
 
@@ -12,7 +12,6 @@ interface SessionDetailsProps {
 }
 
 export function SessionDetails({ sessionId }: SessionDetailsProps): React.JSX.Element {
-  const defaultEngagementScoreProps: EngagementScoreProps = { score: '0' };
   const defaultSlot: Slot = {
     id: '',
     title: '',
@@ -20,17 +19,16 @@ export function SessionDetails({ sessionId }: SessionDetailsProps): React.JSX.El
     time_from: '',
     time_to: '',
     engagement_score: 0,
-    report: undefined,
+    report: '',
     session_id: '',
     trainer_id: '',
   };
 
-  const [engagementScoreProps, setEngagementScoreProps] =
-    React.useState<EngagementScoreProps>(defaultEngagementScoreProps);
   const [slotDetails, setSlotDetails] = React.useState<Slot>(defaultSlot);
+  const [formState, setFormState] = React.useState<Slot>(defaultSlot);
 
+  // Fetch slot details (simulated)
   React.useEffect(() => {
-    // Simulated API call to fetch slot details based on sessionId
     const fetchSlotDetails = async () => {
       console.log('Fetching data for session:', sessionId);
 
@@ -48,38 +46,105 @@ export function SessionDetails({ sessionId }: SessionDetailsProps): React.JSX.El
       };
 
       setSlotDetails(apiResponse);
-      setEngagementScoreProps({ score: apiResponse.engagement_score.toString() });
+      setFormState(apiResponse); // Initialize form with fetched data
     };
 
     fetchSlotDetails();
   }, [sessionId]);
 
+  // Handle form input changes
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormState({ ...formState, [name]: value });
+  };
+
+  // Handle form submission
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    console.log('Updating slot with data:', formState);
+
+    // Simulate API update call
+    setSlotDetails(formState); // Assume the update is successful
+    alert('Slot information updated successfully!');
+  };
+
   return (
-    <Stack spacing={2}>
+    <Stack spacing={4}>
       <Typography variant="h5" fontWeight="bold">
         Session Details
       </Typography>
 
-      <Typography variant="body1">
-        <strong>Title:</strong> {slotDetails.title}
-      </Typography>
-      <Typography variant="body1">
-        <strong>Date:</strong> {slotDetails.date}
-      </Typography>
-      <Typography variant="body1">
-        <strong>Time:</strong> {slotDetails.time_from} - {slotDetails.time_to}
-      </Typography>
-      <Typography variant="body1">
-        <strong>Trainer ID:</strong> {slotDetails.trainer_id}
-      </Typography>
-
-      {slotDetails.report && (
-        <Typography variant="body2" color="textSecondary">
-          <strong>Report:</strong> {slotDetails.report}
+      {/* Display Slot Details */}
+      <Stack spacing={1}>
+        <Typography variant="body1">
+          <strong>Current Details</strong>
         </Typography>
-      )}
+        <Typography variant="body1">Title: {slotDetails.title}</Typography>
+        <Typography variant="body1">Date: {slotDetails.date}</Typography>
+        <Typography variant="body1">
+          Time: {slotDetails.time_from} - {slotDetails.time_to}
+        </Typography>
+        <Typography variant="body1">Trainer ID: {slotDetails.trainer_id}</Typography>
+        <Typography variant="body1">Engagement Score: {slotDetails.engagement_score}</Typography>
+        {slotDetails.report && (
+          <Typography variant="body2" color="textSecondary">
+            Report: {slotDetails.report}
+          </Typography>
+        )}
+      </Stack>
 
-      <EngagementScore score={engagementScoreProps.score} />
+      {/* Update Slot Form */}
+      <form onSubmit={handleSubmit}>
+        <Stack spacing={2}>
+          <Typography variant="h6">Update Slot Information</Typography>
+          <TextField label="Title" name="title" value={formState.title} onChange={handleInputChange} fullWidth />
+          <TextField
+            label="Date"
+            name="date"
+            value={formState.date}
+            onChange={handleInputChange}
+            type="date"
+            InputLabelProps={{ shrink: true }}
+            fullWidth
+          />
+          <TextField
+            label="Time From"
+            name="time_from"
+            value={formState.time_from}
+            onChange={handleInputChange}
+            fullWidth
+          />
+          <TextField label="Time To" name="time_to" value={formState.time_to} onChange={handleInputChange} fullWidth />
+          <TextField
+            label="Trainer ID"
+            name="trainer_id"
+            value={formState.trainer_id}
+            onChange={handleInputChange}
+            fullWidth
+          />
+          <TextField
+            label="Engagement Score"
+            name="engagement_score"
+            value={formState.engagement_score}
+            onChange={handleInputChange}
+            type="number"
+            fullWidth
+          />
+          <TextField
+            label="Report"
+            name="report"
+            value={formState.report}
+            onChange={handleInputChange}
+            multiline
+            rows={3}
+            fullWidth
+          />
+          <Button type="submit" variant="contained" color="primary">
+            Update Slot
+          </Button>
+        </Stack>
+      </form>
     </Stack>
   );
 }
