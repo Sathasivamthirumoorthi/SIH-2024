@@ -10,12 +10,8 @@ import CardHeader from '@mui/material/CardHeader';
 import Divider from '@mui/material/Divider';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Unstable_Grid2';
-import { ArrowLeftIcon } from '@mui/x-date-pickers';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
-
-
-
 import { paths } from '@/paths';
 
 
@@ -26,14 +22,7 @@ import { paths } from '@/paths';
 const validationSchema = Yup.object({
   name: Yup.string().required('Name is required'),
   institution_id: Yup.string().required('Institution ID is required'),
-  trainer_ids: Yup.string()
-    .required('Trainer IDs are required')
-    .matches(/^\s*\w+(,\s*\w+)*\s*$/, 'Trainer IDs must be comma-separated values'),
   no_of_slots: Yup.number().required('Number of Slots is required').min(1, 'Number of Slots must be at least 1'),
-  average_eng_score: Yup.number()
-    .required('Average English Score is required')
-    .min(0, 'Score cannot be negative')
-    .max(100, 'Score cannot exceed 100'),
   slots: Yup.string()
     .required('Slots are required')
     .matches(/^\s*\w+(,\s*\w+)*\s*$/, 'Slots must be comma-separated values'),
@@ -45,9 +34,7 @@ export function AddSession(): React.JSX.Element {
   const handleFormSubmit = async (values: {
     name: string;
     institution_id: string;
-    trainer_ids: string;
     no_of_slots: number;
-    average_eng_score: number;
     slots: string;
   }) => {
     try {
@@ -56,7 +43,6 @@ export function AddSession(): React.JSX.Element {
       // Convert comma-separated strings into arrays
       const payload = {
         ...values,
-        trainer_ids: values.trainer_ids.split(',').map((id) => id.trim()),
         slots: values.slots.split(',').map((slot) => slot.trim()),
       };
 
@@ -71,7 +57,7 @@ export function AddSession(): React.JSX.Element {
 
       // if (response.ok) {
       //   console.log('Session added successfully!');
-      //   router.push(paths.dashboard.sessions.overview);
+      //   router.push('/path-to-session-overview');
       // } else {
       //   console.error('Failed to add session:', response.statusText);
       // }
@@ -89,9 +75,7 @@ export function AddSession(): React.JSX.Element {
       initialValues={{
         name: '',
         institution_id: '',
-        trainer_ids: '',
         no_of_slots: 0,
-        average_eng_score: 0,
         slots: '',
       }}
       validationSchema={validationSchema}
@@ -99,12 +83,7 @@ export function AddSession(): React.JSX.Element {
     >
       {({ values, handleChange, handleBlur, touched, errors, isValid, isSubmitting }) => (
         <Form>
-          <Button
-            onClick={handleBackToSession}
-            startIcon={<ArrowLeftIcon  />}
-            variant="contained"
-            sx={{ marginBottom: '20px' }}
-          >
+          <Button onClick={handleBackToSession} variant="contained" sx={{ marginBottom: '20px' }}>
             Back to Sessions
           </Button>
           <Card>
@@ -139,18 +118,6 @@ export function AddSession(): React.JSX.Element {
                 <Grid xs={12} md={6}>
                   <TextField
                     fullWidth
-                    label="Trainer IDs (comma-separated)"
-                    name="trainer_ids"
-                    value={values.trainer_ids}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    error={touched.trainer_ids && Boolean(errors.trainer_ids)}
-                    helperText={touched.trainer_ids && errors.trainer_ids}
-                  />
-                </Grid>
-                <Grid xs={12} md={6}>
-                  <TextField
-                    fullWidth
                     label="Number of Slots"
                     name="no_of_slots"
                     type="number"
@@ -159,19 +126,6 @@ export function AddSession(): React.JSX.Element {
                     onBlur={handleBlur}
                     error={touched.no_of_slots && Boolean(errors.no_of_slots)}
                     helperText={touched.no_of_slots && errors.no_of_slots}
-                  />
-                </Grid>
-                <Grid xs={12} md={6}>
-                  <TextField
-                    fullWidth
-                    label="Average English Score"
-                    name="average_eng_score"
-                    type="number"
-                    value={values.average_eng_score}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    error={touched.average_eng_score && Boolean(errors.average_eng_score)}
-                    helperText={touched.average_eng_score && errors.average_eng_score}
                   />
                 </Grid>
                 <Grid xs={12} md={6}>
