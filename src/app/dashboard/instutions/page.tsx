@@ -1,5 +1,6 @@
 import * as React from 'react';
 import type { Metadata } from 'next';
+import { InstutionDetailsInterface } from '@/models/InstutionDetails';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -17,10 +18,52 @@ import { InstutionsHeader } from '@/components/dashboard/instution/instutions-he
 import { InstutionsTable } from '@/components/dashboard/instution/instutions-table';
 
 export const metadata = { title: `Customers | Dashboard | ${config.site.name}` } satisfies Metadata;
+export const institutions: InstutionDetailsInterface[] = [
+  {
+    id: '1',
+    average_score: 89.5,
+    name: 'Greenwood High',
+    user_id: '1001',
+    location: 'California, USA',
+    status: 'poor',
+  },
+  {
+    id: '2',
+    average_score: 92.0,
+    name: 'Sunrise Academy',
+    user_id: '1002',
+    location: 'New York, USA',
+    status: 'poor',
+  },
+  {
+    id: '3',
+    average_score: 85.3,
+    name: 'Hilltop Institute',
+    user_id: '1003',
+    location: 'Texas, USA',
+    status: 'avarage',
+  },
+  {
+    id: '4',
+    average_score: 78.9,
+    name: 'Riverside School',
+    user_id: '1004',
+    location: 'Florida, USA',
+    status: 'excellent',
+  },
+  {
+    id: '5',
+    average_score: 94.7,
+    name: 'Maple Leaf College',
+    user_id: '1005',
+    location: 'Toronto, Canada',
+    status: 'avarage',
+  },
+] satisfies InstutionDetailsInterface[];
 
 const customers = [
   {
-    id: 'USR-010',
+    id: '1',
     name: 'Alcides Antonio',
     avatar: '/assets/avatar-10.png',
     email: 'alcides.antonio@devias.io',
@@ -29,7 +72,7 @@ const customers = [
     createdAt: dayjs().subtract(2, 'hours').toDate(),
   },
   {
-    id: 'USR-009',
+    id: '2',
     name: 'Marcus Finn',
     avatar: '/assets/avatar-9.png',
     email: 'marcus.finn@devias.io',
@@ -110,28 +153,77 @@ const customers = [
     address: { city: 'San Diego', country: 'USA', state: 'California', street: '75247' },
     createdAt: dayjs().subtract(2, 'hours').toDate(),
   },
+  {
+    id: 'USR-001',
+    name: 'Miron Vitold',
+    avatar: '/assets/avatar-1.png',
+    email: 'miron.vitold@devias.io',
+    phone: '972-333-4106',
+    address: { city: 'San Diego', country: 'USA', state: 'California', street: '75247' },
+    createdAt: dayjs().subtract(2, 'hours').toDate(),
+  },
+  {
+    id: 'USR-001',
+    name: 'Miron Vitold',
+    avatar: '/assets/avatar-1.png',
+    email: 'miron.vitold@devias.io',
+    phone: '972-333-4106',
+    address: { city: 'San Diego', country: 'USA', state: 'California', street: '75247' },
+    createdAt: dayjs().subtract(2, 'hours').toDate(),
+  },
+  {
+    id: 'USR-001',
+    name: 'Miron Vitold',
+    avatar: '/assets/avatar-1.png',
+    email: 'miron.vitold@devias.io',
+    phone: '972-333-4106',
+    address: { city: 'San Diego', country: 'USA', state: 'California', street: '75247' },
+    createdAt: dayjs().subtract(2, 'hours').toDate(),
+  },
+  {
+    id: 'USR-001',
+    name: 'Miron Vitold',
+    avatar: '/assets/avatar-1.png',
+    email: 'miron.vitold@devias.io',
+    phone: '972-333-4106',
+    address: { city: 'San Diego', country: 'USA', state: 'California', street: '75247' },
+    createdAt: dayjs().subtract(2, 'hours').toDate(),
+  },
+  {
+    id: 'USR-001',
+    name: 'Miron Vitold',
+    avatar: '/assets/avatar-1.png',
+    email: 'miron.vitold@devias.io',
+    phone: '972-333-4106',
+    address: { city: 'San Diego', country: 'USA', state: 'California', street: '75247' },
+    createdAt: dayjs().subtract(2, 'hours').toDate(),
+  },
 ] satisfies Customer[];
 
 export default function Page(): React.JSX.Element {
   const page = 0;
-  const rowsPerPage = 5;
+  const rowsPerPage = 6;
 
-  const paginatedCustomers = applyPagination(customers, page, rowsPerPage);
+  const paginatedInstutions = applyPagination(institutions, page, rowsPerPage);
 
   return (
     <Stack spacing={3}>
       <InstutionsHeader />
       <InstutionsFilters />
       <InstutionsTable
-        count={paginatedCustomers.length}
+        count={paginatedInstutions.length}
         page={page}
-        rows={paginatedCustomers}
+        rows={paginatedInstutions}
         rowsPerPage={rowsPerPage}
       />
     </Stack>
   );
 }
 
-function applyPagination(rows: Customer[], page: number, rowsPerPage: number): Customer[] {
+function applyPagination(
+  rows: InstutionDetailsInterface[],
+  page: number,
+  rowsPerPage: number
+): InstutionDetailsInterface[] {
   return rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 }

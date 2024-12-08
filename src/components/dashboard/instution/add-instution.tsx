@@ -28,7 +28,7 @@ export function AddInstitution(): React.JSX.Element {
   const handleFormSubmit = async (values: { name: string; location: string; email: string }) => {
     try {
       console.log('Form values:', values);
-
+      // api goes here...
       // Example API call
       // const response = await fetch('/api/institutions', {
       //   method: 'POST',

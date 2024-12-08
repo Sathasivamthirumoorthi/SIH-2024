@@ -9,6 +9,10 @@ export const paths = {
       overview: '/dashboard/instutions',
       addInstution: '/dashboard/instutions/add',
     },
+    trainers: {
+      overview: '/dashboard/trainers',
+      addInstution: '/dashboard/trainers/add',
+    },
     integrations: '/dashboard/integrations',
     settings: '/dashboard/settings',
   },

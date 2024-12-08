@@ -1,6 +1,9 @@
 'use client';
 
 import * as React from 'react';
+import { useRouter } from 'next/navigation';
+import { InstutionDetailsInterface } from '@/models/InstutionDetails';
+import { Button } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -16,6 +19,7 @@ import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import dayjs from 'dayjs';
 
+import { paths } from '@/paths';
 import { useSelection } from '@/hooks/use-selection';
 
 function noop(): void {
@@ -35,7 +39,7 @@ export interface Customer {
 interface InstutionsTableProps {
   count?: number;
   page?: number;
-  rows?: Customer[];
+  rows?: InstutionDetailsInterface[];
   rowsPerPage?: number;
 }
 // instution table
@@ -45,6 +49,8 @@ export function InstutionsTable({
   page = 0,
   rowsPerPage = 0,
 }: InstutionsTableProps): React.JSX.Element {
+  console.log(rows);
+  const router = useRouter();
   const rowIds = React.useMemo(() => {
     return rows.map((customer) => customer.id);
   }, [rows]);
@@ -53,6 +59,11 @@ export function InstutionsTable({
 
   const selectedSome = (selected?.size ?? 0) > 0 && (selected?.size ?? 0) < rows.length;
   const selectedAll = rows.length > 0 && selected?.size === rows.length;
+
+  function onHandleViewDetails(id: string) {
+    console.log(id);
+    router.push(paths.dashboard.instutions.overview + `/${id}`);
+  }
 
   return (
     <Card>
@@ -74,9 +85,9 @@ export function InstutionsTable({
                 />
               </TableCell>
               <TableCell>Name</TableCell>
-              <TableCell>Email</TableCell>
+              <TableCell>Status</TableCell>
               <TableCell>Location</TableCell>
-              <TableCell>Signed Up</TableCell>
+              <TableCell>Details</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -99,15 +110,16 @@ export function InstutionsTable({
                   </TableCell>
                   <TableCell>
                     <Stack sx={{ alignItems: 'center' }} direction="row" spacing={2}>
-                      <Avatar src={row.avatar} />
                       <Typography variant="subtitle2">{row.name}</Typography>
                     </Stack>
                   </TableCell>
-                  <TableCell>{row.email}</TableCell>
+                  <TableCell>{row.status}</TableCell>
+                  <TableCell>{row.location}</TableCell>
                   <TableCell>
-                    {row.address.city}, {row.address.state}, {row.address.country}
+                    <Button onClick={() => onHandleViewDetails(row.id)} variant="contained">
+                      View Details
+                    </Button>
                   </TableCell>
-                  <TableCell>{dayjs(row.createdAt).format('MMM D, YYYY')}</TableCell>
                 </TableRow>
               );
             })}
