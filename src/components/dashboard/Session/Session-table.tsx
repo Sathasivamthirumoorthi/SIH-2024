@@ -1,7 +1,8 @@
 'use client';
 
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import apiClient from '@/utils/api';
 import { Button } from '@mui/material';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -16,14 +17,15 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 
+
+
 import { paths } from '@/paths';
 import { useSelection } from '@/hooks/use-selection';
 
-function noop(): void {
-  // do nothing
-}
 
-// Updated Session interface to reflect new Session model structure
+
+
+
 export interface Session {
   id: string;
   trainer_ids: string[];
@@ -37,59 +39,54 @@ export interface Session {
 interface SessionsTableProps {
   count?: number;
   page?: number;
-  rows?: Session[];
   rowsPerPage?: number;
 }
 
-// Hardcoded session data for demonstration
-const hardcodedSessions: Session[] = [
-  {
-    id: '1',
-    trainer_ids: ['Trainer01', 'Trainer02'],
-    institution_id: 'Institution01',
-    name: 'Session A',
-    no_of_slots: 5,
-    average_eng_score: 85.5,
-    slots: ['Slot1', 'Slot2', 'Slot3'],
-  },
-  {
-    id: '2',
-    trainer_ids: ['Trainer03'],
-    institution_id: 'Institution02',
-    name: 'Session B',
-    no_of_slots: 3,
-    average_eng_score: 78.2,
-    slots: ['Slot1', 'Slot2'],
-  },
-  {
-    id: '3',
-    trainer_ids: ['Trainer04', 'Trainer05', 'Trainer06'],
-    institution_id: 'Institution03',
-    name: 'Session C',
-    no_of_slots: 6,
-    average_eng_score: 92.4,
-    slots: ['Slot1', 'Slot2', 'Slot3', 'Slot4'],
-  },
-];
-
 export function SessionTable({
-  count = hardcodedSessions.length,
-  rows = hardcodedSessions,
-  page = 0,
-  rowsPerPage = 5,
+  count: defaultCount = 0,
+  page: defaultPage = 0,
+  rowsPerPage: defaultRowsPerPage = 5,
 }: SessionsTableProps): React.JSX.Element {
+  const [sessions, setSessions] = useState<Session[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
   const router = useRouter();
 
-  const rowIds = React.useMemo(() => rows.map((session) => session.id), [rows]);
-
+  const rowIds = React.useMemo(() => sessions.map((session) => session.id), [sessions]);
   const { selectAll, deselectAll, selectOne, deselectOne, selected } = useSelection(rowIds);
 
-  const selectedSome = (selected?.size ?? 0) > 0 && (selected?.size ?? 0) < rows.length;
-  const selectedAll = rows.length > 0 && selected?.size === rows.length;
+  const selectedSome = (selected?.size ?? 0) > 0 && (selected?.size ?? 0) < sessions.length;
+  const selectedAll = sessions.length > 0 && selected?.size === sessions.length;
+
+  useEffect(() => {
+    const fetchSessions = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const response = await apiClient.get('https://sih-2024-backend-o83c.onrender.com/api/v1/sessions');
+        setSessions(response.data); // Assuming response data is an array of sessions
+      } catch (err: any) {
+        setError(err.message || 'Failed to fetch sessions');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSessions();
+  }, []);
 
   function onHandleViewDetails(id: string) {
-    console.log(id);
-    router.push(paths.dashboard.Session.overview + `/${id}`);
+    router.push(`${paths.dashboard.Session.overview}/${id}`);
+  }
+
+  if (loading) {
+    return <Typography>Loading...</Typography>;
+  }
+
+  if (error) {
+    return <Typography color="error">{error}</Typography>;
   }
 
   return (
@@ -121,35 +118,35 @@ export function SessionTable({
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => {
-              const isSelected = selected?.has(row.id);
+            {sessions.map((session) => {
+              const isSelected = selected?.has(session.id);
 
               return (
-                <TableRow hover key={row.id} selected={isSelected}>
+                <TableRow hover key={session.id} selected={isSelected}>
                   <TableCell padding="checkbox">
                     <Checkbox
                       checked={isSelected}
                       onChange={(event) => {
                         if (event.target.checked) {
-                          selectOne(row.id);
+                          selectOne(session.id);
                         } else {
-                          deselectOne(row.id);
+                          deselectOne(session.id);
                         }
                       }}
                     />
                   </TableCell>
                   <TableCell>
-                    <Stack sx={{ alignItems: 'center' }} direction="row" spacing={2}>
-                      <Typography variant="subtitle2">{row.name}</Typography>
+                    <Stack direction="row" spacing={2}>
+                      <Typography variant="subtitle2">{session.name}</Typography>
                     </Stack>
                   </TableCell>
-                  <TableCell>{row.institution_id}</TableCell>
-                  <TableCell>{Array.isArray(row.trainer_ids) ? row.trainer_ids.join(', ') : 'N/A'}</TableCell>
-                  <TableCell>{row.no_of_slots}</TableCell>
-                  <TableCell>{row.average_eng_score}</TableCell>
-                  <TableCell>{Array.isArray(row.slots) ? row.slots.join(', ') : 'N/A'}</TableCell>
+                  <TableCell>{session.institution_id}</TableCell>
+                  <TableCell>{session.trainer_ids.join(', ')}</TableCell>
+                  <TableCell>{session.no_of_slots}</TableCell>
+                  <TableCell>{session.average_eng_score}</TableCell>
+                  <TableCell>{session.slots.join(', ')}</TableCell>
                   <TableCell>
-                    <Button onClick={() => onHandleViewDetails(row.id)} variant="contained">
+                    <Button onClick={() => onHandleViewDetails(session.id)} variant="contained">
                       View Details
                     </Button>
                   </TableCell>
@@ -157,17 +154,16 @@ export function SessionTable({
               );
             })}
           </TableBody>
-
         </Table>
       </Box>
       <Divider />
       <TablePagination
         component="div"
-        count={count}
-        onPageChange={noop}
-        onRowsPerPageChange={noop}
-        page={page}
-        rowsPerPage={rowsPerPage}
+        count={defaultCount || sessions.length}
+        onPageChange={() => {}}
+        onRowsPerPageChange={() => {}}
+        page={defaultPage}
+        rowsPerPage={defaultRowsPerPage}
         rowsPerPageOptions={[5, 10, 25]}
       />
     </Card>
