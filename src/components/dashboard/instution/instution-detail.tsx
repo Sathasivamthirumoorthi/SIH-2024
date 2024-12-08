@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { EngagementScoreProps } from '@/models/engagementScore';
+import { EngagementScoreProps } from '@/models/engagementscore';
 import { InstutionDetailsInterface } from '@/models/InstutionDetails';
 import { Stack } from '@mui/system';
 

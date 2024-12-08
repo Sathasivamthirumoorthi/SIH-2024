@@ -11,7 +11,7 @@ export const paths = {
     },
     trainers: {
       overview: '/dashboard/trainers',
-      addInstution: '/dashboard/trainers/add',
+      addTrainer: '/dashboard/trainers/add',
     },
     integrations: '/dashboard/integrations',
     settings: '/dashboard/settings',

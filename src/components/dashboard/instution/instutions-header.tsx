@@ -14,8 +14,7 @@ export function InstutionsHeader(): React.JSX.Element {
     router.push(paths.dashboard.instutions.addInstution);
   };
   return (
-    <>
-      <Stack direction="row" spacing={3}>
+    <Stack direction="row" spacing={3}>
         <Stack spacing={1} sx={{ flex: '1 1 auto' }}>
           <Typography variant="h4">Instutions</Typography>
         </Stack>
@@ -29,6 +28,5 @@ export function InstutionsHeader(): React.JSX.Element {
           </Button>
         </div>
       </Stack>
-    </>
   );
 }
