@@ -26,16 +26,6 @@ function noop(): void {
   // do nothing
 }
 
-export interface Customer {
-  id: string;
-  avatar: string;
-  name: string;
-  email: string;
-  address: { city: string; state: string; country: string; street: string };
-  phone: string;
-  createdAt: Date;
-}
-
 interface InstutionsTableProps {
   count?: number;
   page?: number;
@@ -52,7 +42,7 @@ export function InstutionsTable({
   console.log(rows);
   const router = useRouter();
   const rowIds = React.useMemo(() => {
-    return rows.map((customer) => customer.id);
+    return rows.map((customer) => customer.uid);
   }, [rows]);
 
   const { selectAll, deselectAll, selectOne, deselectOne, selected } = useSelection(rowIds);
@@ -92,18 +82,18 @@ export function InstutionsTable({
           </TableHead>
           <TableBody>
             {rows.map((row) => {
-              const isSelected = selected?.has(row.id);
+              const isSelected = selected?.has(row.uid);
 
               return (
-                <TableRow hover key={row.id} selected={isSelected}>
+                <TableRow hover key={row.uid} selected={isSelected}>
                   <TableCell padding="checkbox">
                     <Checkbox
                       checked={isSelected}
                       onChange={(event) => {
                         if (event.target.checked) {
-                          selectOne(row.id);
+                          selectOne(row.uid);
                         } else {
-                          deselectOne(row.id);
+                          deselectOne(row.uid);
                         }
                       }}
                     />
@@ -116,7 +106,7 @@ export function InstutionsTable({
                   <TableCell>{row.status}</TableCell>
                   <TableCell>{row.location}</TableCell>
                   <TableCell>
-                    <Button onClick={() => onHandleViewDetails(row.id)} variant="contained">
+                    <Button onClick={() => onHandleViewDetails(row.uid)} variant="contained">
                       View Details
                     </Button>
                   </TableCell>
