@@ -38,7 +38,7 @@ interface InstutionsTableProps {
   rows?: Customer[];
   rowsPerPage?: number;
 }
-
+// instution table
 export function InstutionsTable({
   count = 0,
   rows = [],
