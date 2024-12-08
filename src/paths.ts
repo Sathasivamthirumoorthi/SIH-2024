@@ -13,6 +13,10 @@ export const paths = {
       overview: '/dashboard/trainers',
       addTrainer: '/dashboard/trainers/add',
     },
+    Session: {
+      overview: '/dashboard/Session',
+      addInstution: '/dashboard/Session/add',
+    },
     integrations: '/dashboard/integrations',
     settings: '/dashboard/settings',
   },
