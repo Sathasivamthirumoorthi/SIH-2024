@@ -2,7 +2,6 @@
 
 import * as React from 'react';
 import { EngagementScoreProps } from '@/models/engagementscore';
-import { InstutionDetailsInterface } from '@/models/InstutionDetails';
 import { Stack } from '@mui/system';
 
 import { EngagementScore } from '../common/engagement-score';
@@ -16,15 +15,15 @@ export function InstutionDetails({ instutionId }: InstutionDetailsProps): React.
   };
   let [engagementScoreProps, SetEngagementScoreProps] =
     React.useState<EngagementScoreProps>(defaultEngagementScoreProps);
-    
+
   React.useEffect(() => {
     console.log(instutionId);
-    // api logic goes here 
+    // api logic goes here
     SetEngagementScoreProps({
       score: '22.22',
     });
   }, []);
-  
+
   return (
     <>
       <Stack>
