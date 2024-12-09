@@ -1,40 +1,15 @@
 'use client';
 
 import * as React from 'react';
-import { Slot } from '@/models/Slot';
+import { Session } from '@/models/sessionsDetail';
+import { slot } from '@/models/Slot';
 import { Stack, Typography } from '@mui/material';
 
 interface SessionDetailsProps {
-  sessionId: string;
+  session: Session;
 }
 
-export function SessionDetails({ sessionId }: SessionDetailsProps): React.JSX.Element {
-  const defaultSlot: Partial<Slot> = {
-    trainer_name: '',
-    session_engagement_score: 0,
-    report: '',
-  };
-
-  const [slotDetails, setSlotDetails] = React.useState<Partial<Slot>>(defaultSlot);
-
-  // Fetch slot details (simulated)
-  React.useEffect(() => {
-    const fetchSlotDetails = async () => {
-      console.log('Fetching data for session:', sessionId);
-
-      // Simulate API response
-      const apiResponse: Partial<Slot> = {
-        trainer_name: 'John Doe',
-        session_engagement_score: 25.5,
-        report: 'This session provided in-depth knowledge about React hooks.',
-      };
-
-      setSlotDetails(apiResponse);
-    };
-
-    fetchSlotDetails();
-  }, [sessionId]);
-
+export function SessionDetails({ session }: SessionDetailsProps): React.JSX.Element {
   return (
     <Stack spacing={4}>
       <Typography variant="h5" fontWeight="bold">
@@ -43,17 +18,26 @@ export function SessionDetails({ sessionId }: SessionDetailsProps): React.JSX.El
 
       {/* Display Slot Details */}
       <Stack spacing={1}>
-        <Typography variant="body1">
-          <strong>Trainer Name:</strong> {slotDetails.trainer_name}
-        </Typography>
-        <Typography variant="body1">
-          <strong>Session Engagement Score:</strong> {slotDetails.session_engagement_score}
-        </Typography>
-        {slotDetails.report && (
-          <Typography variant="body2" color="textSecondary">
-            <strong>Report:</strong> {slotDetails.report}
+        {session.trainer_ids.length <= 1 ? (
+          <Typography variant="body1">
+            {/* add if one trainer */}
+            <strong>Trainer Name:</strong>
+          </Typography>
+        ) : (
+          <Typography variant="body1">
+            {/* add trainer comma seperator */}
+            <strong>Trainers Name:</strong>
           </Typography>
         )}
+
+        <Typography variant="body1">
+          <strong>Session Engagement Score:</strong>
+        </Typography>
+        {/* {slotDetails.report && (
+          <Typography variant="body2" color="textSecondary">
+            <strong>Report:</strong> 
+          </Typography>
+        )} */}
       </Stack>
     </Stack>
   );

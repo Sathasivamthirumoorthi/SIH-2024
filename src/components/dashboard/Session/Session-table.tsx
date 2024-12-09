@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Session } from '@/models/sessionsDetail';
 import apiClient from '@/utils/api';
 import { Button } from '@mui/material';
 import Box from '@mui/material/Box';
@@ -20,67 +21,35 @@ import Typography from '@mui/material/Typography';
 import { paths } from '@/paths';
 import { useSelection } from '@/hooks/use-selection';
 
-export interface Session {
-  uid: string;
-  trainer_ids: string[];
-  institution_id: string;
-  name: string;
-  no_of_slots: number;
-  average_eng_score: number;
-  slots: string[];
+function noop(): void {
+  // do nothing
 }
-
 interface SessionsTableProps {
+  rows?: Session[];
   count?: number;
   page?: number;
   rowsPerPage?: number;
 }
 
 export function SessionTable({
-  count: defaultCount = 0,
-  page: defaultPage = 0,
-  rowsPerPage: defaultRowsPerPage = 5,
+  count = 0,
+  rows = [],
+  page = 0,
+  rowsPerPage = 0,
 }: SessionsTableProps): React.JSX.Element {
-  const [sessions, setSessions] = useState<Session[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
+  console.log(rows);
   const router = useRouter();
+  const rowIds = React.useMemo(() => {
+    return rows.map((customer) => customer.uid);
+  }, [rows]);
 
-  const rowIds = React.useMemo(() => sessions.map((session) => session.uid), [sessions]);
   const { selectAll, deselectAll, selectOne, deselectOne, selected } = useSelection(rowIds);
 
-  const selectedSome = (selected?.size ?? 0) > 0 && (selected?.size ?? 0) < sessions.length;
-  const selectedAll = sessions.length > 0 && selected?.size === sessions.length;
-
-  useEffect(() => {
-    const fetchSessions = async () => {
-      setLoading(true);
-      setError(null);
-
-      try {
-        const response = await apiClient.get('/sessions');
-        setSessions(response.data); // Assuming response data is an array of sessions
-      } catch (err: any) {
-        setError(err.message || 'Failed to fetch sessions');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchSessions();
-  }, []);
+  const selectedSome = (selected?.size ?? 0) > 0 && (selected?.size ?? 0) < rows.length;
+  const selectedAll = rows.length > 0 && selected?.size === rows.length;
 
   function onHandleViewDetails(id: string) {
     router.push(`${paths.dashboard.Session.overview}/${id}`);
-  }
-
-  if (loading) {
-    return <Typography>Loading...</Typography>;
-  }
-
-  if (error) {
-    return <Typography color="error">{error}</Typography>;
   }
 
   return (
@@ -109,7 +78,7 @@ export function SessionTable({
             </TableRow>
           </TableHead>
           <TableBody>
-            {sessions.map((session) => {
+            {rows.map((session) => {
               const isSelected = selected?.has(session.uid);
 
               return (
@@ -147,11 +116,11 @@ export function SessionTable({
       <Divider />
       <TablePagination
         component="div"
-        count={defaultCount || sessions.length}
-        onPageChange={() => {}}
-        onRowsPerPageChange={() => {}}
-        page={defaultPage}
-        rowsPerPage={defaultRowsPerPage}
+        count={count}
+        onPageChange={noop}
+        onRowsPerPageChange={noop}
+        page={page}
+        rowsPerPage={rowsPerPage}
         rowsPerPageOptions={[5, 10, 25]}
       />
     </Card>

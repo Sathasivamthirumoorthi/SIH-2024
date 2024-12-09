@@ -9,6 +9,5 @@ export interface TrainersDetailsInterface {
   }
   export interface AddTrainerRequest {
     name: string;
-    
     email: string;
   }

@@ -1,5 +1,5 @@
 // models/Slot.ts
-export interface Slot {
+export interface slot {
   id: string;
   title: string;
   date: string;

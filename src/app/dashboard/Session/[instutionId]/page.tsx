@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { redirect } from 'next/navigation';
 import { InstutionDetailsInterface } from '@/models/InstutionDetails';
+import { Session } from '@/models/sessionsDetail';
+import apiClient from '@/utils/api';
 
 import { AddSession } from '@/components/dashboard/Session/add-Session';
 import { SessionDetails } from '@/components/dashboard/Session/Session-detail';
@@ -11,13 +13,25 @@ const isValidInstitution = (id: string): boolean => {
   return validIds.includes(id);
 };
 
-export default function instution({ params }: { params: { instutionId: string } }): React.JSX.Element {
-  const path: string = params.instutionId; // asdasd
+async function fetchSession(sessionId: string): Promise<Session> {
+  try {
+    const response = await apiClient.get(`/sessions/${sessionId}`);
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Failed to fetch institutions:', error);
+    throw new Error('Unable to fetch institutions');
+  }
+}
+
+export default async function instution({ params }: { params: { sessionId: string } }): Promise<React.JSX.Element> {
+  const path: string = params.sessionId; // asdasd
   if (path === 'add') {
     return <AddSession />;
   }
+  const sessions = await fetchSession(path);
   // if (!isValidInstitution(path)) {
   //   redirect('/404');
   // }
-  return <SessionDetails instutionId={path} />;
+  return <SessionDetails session={sessions} />;
 }

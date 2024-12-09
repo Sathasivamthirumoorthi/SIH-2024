@@ -2,14 +2,15 @@
 
 import * as React from 'react';
 import { EngagementScoreProps } from '@/models/engagementscore';
+import { InstutionDetailsInterface } from '@/models/InstutionDetails';
 import { Stack } from '@mui/system';
 
 import { EngagementScore } from '../common/engagement-score';
 
 interface InstutionDetailsProps {
-  instutionId: string;
+  instution: InstutionDetailsInterface;
 }
-export function InstutionDetails({ instutionId }: InstutionDetailsProps): React.JSX.Element {
+export function InstutionDetails({ instution }: InstutionDetailsProps): React.JSX.Element {
   const defaultEngagementScoreProps: EngagementScoreProps = {
     score: '0', // default value
   };

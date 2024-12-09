@@ -12,22 +12,22 @@ const isValidInstitution = (id: string): boolean => {
   return validIds.includes(id);
 };
 
-async function fetchInstitutions(instutionId: string): Promise<InstutionDetailsInterface[]> {
+async function fetchInstitutions(instutionId: string): Promise<InstutionDetailsInterface> {
   try {
     const response = await apiClient.get(`/institutions/${instutionId}`);
     console.log(response.data);
     return response.data;
   } catch (error) {
     console.error('Failed to fetch institutions:', error);
-    // throw new Error('Unable to fetch institutions');
-    var instutionDetails: InstutionDetailsInterface[] = [];
-    return instutionDetails;
+    throw new Error('Unable to fetch institutions');
+    // var instutionDetails: InstutionDetailsInterface;
+    // return instutionDetails;
   }
 }
 
 export default async function instution({ params }: { params: { instutionId: string } }): Promise<React.JSX.Element> {
   const path: string = params.instutionId; // asdasd
-  const institutions = await fetchInstitutions(path);
+  const institution = await fetchInstitutions(path);
 
   if (path === 'add') {
     return <AddInstitution />;
@@ -35,5 +35,5 @@ export default async function instution({ params }: { params: { instutionId: str
   // if (!isValidInstitution(path)) {
   //   redirect('/404');
   // }
-  return <InstutionDetails instutionId={path} />;
+  return <InstutionDetails instution={institution} />;
 }
