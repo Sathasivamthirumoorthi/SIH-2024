@@ -28,7 +28,7 @@ function noop(): void {
 const statusMap = {
   poor: { label: 'Poor', color: 'error' },
   avarage: { label: 'Avarage', color: 'warning' },
-  excelent: { label: 'Excelent', color: 'success' },
+  excellent: { label: 'Excellent', color: 'success' },
 } as const;
 
 interface InstutionsTableProps {
@@ -88,7 +88,7 @@ export function InstutionsTable({
           <TableBody>
             {rows.map((row) => {
               const isSelected = selected?.has(row.uid);
-              const { label, color } = statusMap['excelent'] ?? { label: 'Unknown', color: 'default' };
+              const { label, color } = statusMap[row.status] ?? { label: 'Unknown', color: 'default' };
 
               return (
                 <TableRow hover key={row.uid} selected={isSelected}>
