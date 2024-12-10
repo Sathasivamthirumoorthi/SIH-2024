@@ -3,7 +3,7 @@ import { EngagementScoreProps } from '@/models/engagementscore';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Stack from '@mui/material/Stack';
-import type { SxProps } from '@mui/material/styles';
+import type { SxProps } from '@mui/material/styles';  
 import Typography from '@mui/material/Typography';
 import { ArrowUp as ArrowUpIcon } from '@phosphor-icons/react/dist/ssr/ArrowUp';
 
