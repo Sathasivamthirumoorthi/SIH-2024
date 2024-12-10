@@ -14,13 +14,15 @@ import { CaretUpDown as CaretUpDownIcon } from '@phosphor-icons/react/dist/ssr/C
 import type { NavItemConfig } from '@/types/nav';
 import { paths } from '@/paths';
 import { isNavItemActive } from '@/lib/is-nav-item-active';
+import { useUser } from '@/hooks/use-user';
 import { Logo } from '@/components/core/logo';
 
-import { navItems } from './config';
+import { instutionsNavItems, navItems, regulatoryBodyNavItems } from './config';
 import { navIcons } from './nav-icons';
 
 export function SideNav(): React.JSX.Element {
   const pathname = usePathname();
+  const { user } = useUser();
 
   return (
     <Box
@@ -56,9 +58,16 @@ export function SideNav(): React.JSX.Element {
         </Box>
       </Stack>
       <Divider sx={{ borderColor: 'var(--mui-palette-neutral-700)' }} />
-      <Box component="nav" sx={{ flex: '1 1 auto', p: '12px' }}>
-        {renderNavItems({ pathname, items: navItems })}
-      </Box>
+      {user?.role === 'institution' ? (
+        <Box component="nav" sx={{ flex: '1 1 auto', p: '12px' }}>
+          {renderNavItems({ pathname, items: instutionsNavItems })}
+        </Box>
+      ) : (
+        <Box component="nav" sx={{ flex: '1 1 auto', p: '12px' }}>
+          {renderNavItems({ pathname, items: regulatoryBodyNavItems })}
+        </Box>
+      )}
+
       <Divider sx={{ borderColor: 'var(--mui-palette-neutral-700)' }} />
     </Box>
   );

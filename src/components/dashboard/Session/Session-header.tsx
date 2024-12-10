@@ -11,7 +11,7 @@ import { paths } from '@/paths';
 export function SessionHeader(): React.JSX.Element {
   const router = useRouter();
   const onAddSession = () => {
-    router.push(paths.dashboard.Session.addInstution);
+    router.push(paths.dashboard.Sessions.addInstution);
   };
   return (
     <>

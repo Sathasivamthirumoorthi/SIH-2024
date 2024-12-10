@@ -42,6 +42,7 @@ export interface ResetPasswordParams {
 export interface LoggedInUser {
   email: string;
   role: 'regulatoryBody' | 'instution';
+  instutionId?: string;
 }
 
 class AuthClient {
@@ -64,19 +65,29 @@ class AuthClient {
 
     // Make API request
     try {
-      // await apiClient.post('/institutions/', );
-      // We do not handle the API, so we'll check if the credentials match with the hardcoded ones.
-      if (email !== 'sofia@devias.io' || password !== 'Secret1') {
+      const userDetail = await apiClient.post(`/users/login?email=${email}&password=${password}`);
+      if (userDetail.data.message === 'Login successful') {
+        if (userDetail.data.uid) {
+          let loggedInUser: LoggedInUser = {
+            email: email,
+            role: userDetail.data.role,
+            instutionId: userDetail.data.uid,
+          };
+          const token = generateToken();
+          localStorage.setItem('custom-auth-token', token);
+          localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser));
+        } else {
+          let loggedInUser: LoggedInUser = {
+            email: email,
+            role: userDetail.data.role,
+          };
+          const token = generateToken();
+          localStorage.setItem('custom-auth-token', token);
+          localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser));
+        }
+      } else {
         return { error: 'Invalid credentials' };
       }
-
-      let loggedInUser: LoggedInUser = {
-        email: 'sofia@devias.io',
-        role: 'regulatoryBody',
-      };
-      const token = generateToken();
-      localStorage.setItem('custom-auth-token', token);
-      localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser));
     } catch (error) {
       return { error: 'Invalid credentials' };
     }

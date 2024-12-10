@@ -49,7 +49,7 @@ export function SessionTable({
   const selectedAll = rows.length > 0 && selected?.size === rows.length;
 
   function onHandleViewDetails(id: string) {
-    router.push(`${paths.dashboard.Session.overview}/${id}`);
+    router.push(`${paths.dashboard.Sessions.overview}/${id}`);
   }
 
   return (

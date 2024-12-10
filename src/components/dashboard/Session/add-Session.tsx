@@ -1,7 +1,9 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import apiClient from '@/utils/api';
+import { Accordion, AccordionDetails, AccordionSummary, MenuItem, Typography } from '@mui/material';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
@@ -10,42 +12,52 @@ import CardHeader from '@mui/material/CardHeader';
 import Divider from '@mui/material/Divider';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Unstable_Grid2';
-import { Form, Formik } from 'formik';
+import { ArrowDown } from '@phosphor-icons/react';
+import { FieldArray, Form, Formik } from 'formik';
 import * as Yup from 'yup';
+
 import { paths } from '@/paths';
-
-
-
-
+import { useUser } from '@/hooks/use-user';
 
 // Validation schema for the session form
 const validationSchema = Yup.object({
   name: Yup.string().required('Name is required'),
-  institution_id: Yup.string().required('Institution ID is required'),
+  trainer_id: Yup.string().required('Trainer is required'),
   no_of_slots: Yup.number().required('Number of Slots is required').min(1, 'Number of Slots must be at least 1'),
-  slots: Yup.string()
-    .required('Slots are required')
-    .matches(/^\s*\w+(,\s*\w+)*\s*$/, 'Slots must be comma-separated values'),
+  slots: Yup.array()
+    .of(
+      Yup.object({
+        title: Yup.string().required('Title is required'),
+        date: Yup.string().required('date is required'),
+        fromTime: Yup.string().required('From time is required'),
+        toTime: Yup.string().required('To time is required'),
+        trainer_id: Yup.string(),
+      })
+    )
+    .required('Slots are required'),
+  // have an array for Slots with re
 });
 
 export function AddSession(): React.JSX.Element {
   const router = useRouter();
-
-  const handleFormSubmit = async (values: {
-    name: string;
-    institution_id: string;
-    no_of_slots: number;
-    slots: string;
-  }) => {
+  const { user } = useUser();
+  const [noOfSlots, setNoOfSlots] = useState(0);
+  const [trainers, setTrainers] = useState([]);
+  const handleFormSubmit = async (values: any) => {
     try {
-      console.log('Form values:', values);
+      if (user?.instutionId) {
+        values.institutionId = user?.instutionId;
+        const trainerId = values.trainer_id;
+        values.slots.forEach((slot: any) => {
+          slot.trainer_id = trainerId;
+        });
+        // sessions/
+        await apiClient.post('/trainers/', values);
+        router.push(paths.dashboard.Sessions.overview);
+        console.log('Form values:', values);
+      }
 
       // Convert comma-separated strings into arrays
-      const payload = {
-        ...values,
-        slots: values.slots.split(',').map((slot) => slot.trim()),
-      };
-
       // Example API call
       // const response = await fetch('/api/sessions', {
       //   method: 'POST',
@@ -67,16 +79,50 @@ export function AddSession(): React.JSX.Element {
   };
 
   const handleBackToSession = () => {
-    router.push(paths.dashboard.Session.overview);
+    router.push(paths.dashboard.Sessions.overview);
   };
+
+  React.useEffect(() => {
+    const fetchTrainerDetail = async () => {
+      try {
+        const trainerDetail = await apiClient.get(`/trainers/institution/${'9a6a691b-1812-4591-b18d-c60ed25a3a42'}`);
+        // Handle the response as needed
+        console.log(trainerDetail.data);
+        setTrainers(trainerDetail.data || []);
+      } catch (error) {
+        console.error('Error fetching trainer details:', error);
+      }
+    };
+    fetchTrainerDetail();
+  }, []);
+
+  // {
+  //   "trainer_ids": [
+  //     "af1cdcdc-3f2b-404f-a903-6d61cc9a45b4"
+  //   ],
+  //   "institution_id": "a0152682-513e-4834-8e5e-eae0a9a15dbc",
+  //   "name": "AA",
+  //   "no_of_slots": 1,
+  //   "average_eng_score": 0,
+  //   "slots": [
+  //     {
+  //       "title": "BB",
+  //       "date": "12/12/2023",
+  //       "time_from": "09:00",
+  //       "time_to": "10:00",
+  //       "trainer_id": "af1cdcdc-3f2b-404f-a903-6d61cc9a45b4"
+  //     }
+  //   ]
+  // }
 
   return (
     <Formik
       initialValues={{
         name: '',
-        institution_id: '',
+        institutionId: '',
+        trainer_id: '',
         no_of_slots: 0,
-        slots: '',
+        slots: [{ title: '', date: '', fromTime: '', toTime: '', trainer_id: '' }],
       }}
       validationSchema={validationSchema}
       onSubmit={handleFormSubmit}
@@ -106,18 +152,6 @@ export function AddSession(): React.JSX.Element {
                 <Grid xs={12} md={6}>
                   <TextField
                     fullWidth
-                    label="Institution ID"
-                    name="institution_id"
-                    value={values.institution_id}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    error={touched.institution_id && Boolean(errors.institution_id)}
-                    helperText={touched.institution_id && errors.institution_id}
-                  />
-                </Grid>
-                <Grid xs={12} md={6}>
-                  <TextField
-                    fullWidth
                     label="Number of Slots"
                     name="no_of_slots"
                     type="number"
@@ -131,14 +165,85 @@ export function AddSession(): React.JSX.Element {
                 <Grid xs={12} md={6}>
                   <TextField
                     fullWidth
-                    label="Slots (comma-separated)"
-                    name="slots"
-                    value={values.slots}
+                    select
+                    label="Trainer"
+                    name="trainer_id"
+                    value={values.trainer_id}
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    error={touched.slots && Boolean(errors.slots)}
-                    helperText={touched.slots && errors.slots}
-                  />
+                    error={touched.trainer_id && Boolean(errors.trainer_id)}
+                    helperText={touched.trainer_id && errors.trainer_id}
+                  >
+                    {trainers.map((trainer: any) => (
+                      <MenuItem key={trainer.uid} value={trainer.uid}>
+                        {trainer.name}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </Grid>
+                <Grid xs={12} md={12}>
+                  <FieldArray name="slots">
+                    {({ push, remove }) => (
+                      <>
+                        {Array.from({ length: values.no_of_slots }).map((_, index) => (
+                          <Accordion sx={{ borderColor: '-moz-initial' }} key={index}>
+                            <AccordionSummary expandIcon={<ArrowDown />}>
+                              <Typography variant="h6">Slot {index + 1}</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                              <Grid container spacing={2}>
+                                <Grid xs={12} md={6}>
+                                  <TextField
+                                    fullWidth
+                                    label="Title"
+                                    name={`slots[${index}].title`}
+                                    value={values.slots[index]?.title || ''}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    helperText={touched.slots?.[index]?.title}
+                                  />
+                                </Grid>
+
+                                <Grid xs={12} md={6}>
+                                  <TextField
+                                    fullWidth
+                                    label="Date"
+                                    name={`slots[${index}].date`}
+                                    value={values.slots[index]?.date || ''}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    helperText={touched.slots?.[index]?.date}
+                                  />
+                                </Grid>
+                                <Grid xs={12} md={6}>
+                                  <TextField
+                                    fullWidth
+                                    label="From Time"
+                                    name={`slots[${index}].fromTime`}
+                                    value={values.slots[index]?.fromTime || ''}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    helperText={touched.slots?.[index]?.fromTime}
+                                  />
+                                </Grid>
+                                <Grid xs={12} md={6}>
+                                  <TextField
+                                    fullWidth
+                                    label="To Time"
+                                    name={`slots[${index}].toTime`}
+                                    value={values.slots[index]?.toTime || ''}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    helperText={touched.slots?.[index]?.toTime}
+                                  />
+                                </Grid>
+                              </Grid>
+                            </AccordionDetails>
+                          </Accordion>
+                        ))}
+                      </>
+                    )}
+                  </FieldArray>
                 </Grid>
               </Grid>
             </CardContent>

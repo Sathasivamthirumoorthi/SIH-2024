@@ -17,9 +17,9 @@ import type { Customer } from '@/components/dashboard/customer/customers-table';
 import { InstutionsFilters } from '@/components/dashboard/instution/instutions-filters';
 import { InstutionsHeader } from '@/components/dashboard/instution/instutions-header';
 import { InstutionsTable } from '@/components/dashboard/instution/instutions-table';
-import { SessionFilters } from '@/components/dashboard/Session/Session-filters';
-import { SessionHeader } from '@/components/dashboard/Session/Session-header';
-import { Session, SessionTable } from '@/components/dashboard/Session/Session-table';
+import { SessionFilters } from '@/components/dashboard/session/session-filters';
+import { SessionHeader } from '@/components/dashboard/session/session-header';
+import { Session, SessionTable } from '@/components/dashboard/session/session-table';
 
 export const metadata = { title: `Customers | Dashboard | ${config.site.name}` } satisfies Metadata;
 export const institutions: InstutionDetailsInterface[] = [
@@ -65,7 +65,7 @@ export const institutions: InstutionDetailsInterface[] = [
   },
 ] satisfies InstutionDetailsInterface[];
 
-async function fetchInstitutions(): Promise<Session[]> {
+async function fetchSessions(): Promise<Session[]> {
   try {
     const response = await apiClient.get('/sessions');
     console.log(response.data);
@@ -77,7 +77,7 @@ async function fetchInstitutions(): Promise<Session[]> {
 }
 
 export default async function Page(): Promise<React.JSX.Element> {
-  const sessions = await fetchInstitutions();
+  const sessions = await fetchSessions();
 
   const page = 0;
   const rowsPerPage = 6;

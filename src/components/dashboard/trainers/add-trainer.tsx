@@ -18,29 +18,28 @@ import * as Yup from 'yup';
 import { isValid } from 'zod';
 
 import { paths } from '@/paths';
+import { useUser } from '@/hooks/use-user';
 
 const validationSchema = Yup.object({
   name: Yup.string().required('Name is required'),
-  
+
   email: Yup.string().email('Invalid email format').required('Email is required'),
 });
 
 export function AddTrainers(): React.JSX.Element {
+  const { checkSession, user } = useUser();
+  console.log(user);
   const router = useRouter();
-  const handleFormSubmit = async (values: { name: string; email: string  }) => {
-   
+  const handleFormSubmit = async (values: { name: string; email: string }) => {
     try {
-        const trainerRequestObject: AddTrainerRequest = {
-            name: values.name,
-            
-            email: values.email,
-            institution_id: 13,
-          };
-          await apiClient.post('/trainers/', trainerRequestObject);
-         
-          router.push(paths.dashboard.trainers.overview);
+      const trainerRequestObject: AddTrainerRequest = {
+        name: values.name,
+        email: values.email,
+        institution_id: user?.instutionId,
+      };
+      await apiClient.post('/trainers/', trainerRequestObject);
 
-      
+      router.push(paths.dashboard.trainers.overview);
     } catch (error) {
       console.error('Error during form submission:', error);
     }
@@ -49,11 +48,7 @@ export function AddTrainers(): React.JSX.Element {
     router.push(paths.dashboard.trainers.overview);
   };
   return (
-    <Formik
-      initialValues={{ name: '', email: '' }}
-      validationSchema={validationSchema}
-      onSubmit={handleFormSubmit}
-    >
+    <Formik initialValues={{ name: '', email: '' }} validationSchema={validationSchema} onSubmit={handleFormSubmit}>
       {({ values, handleChange, handleBlur, touched, errors, isValid, isSubmitting }) => (
         <Form>
           <Button
@@ -81,7 +76,7 @@ export function AddTrainers(): React.JSX.Element {
                     helperText={touched.name && errors.name}
                   />
                 </Grid>
-            
+
                 <Grid xs={12} md={6}>
                   <TextField
                     fullWidth

@@ -13,9 +13,9 @@ export const paths = {
       overview: '/dashboard/trainers',
       addTrainer: '/dashboard/trainers/add',
     },
-    Session: {
-      overview: '/dashboard/Session',
-      addInstution: '/dashboard/Session/add',
+    Sessions: {
+      overview: '/dashboard/sessions',
+      addInstution: '/dashboard/sessions/add',
     },
     integrations: '/dashboard/integrations',
     settings: '/dashboard/settings',
