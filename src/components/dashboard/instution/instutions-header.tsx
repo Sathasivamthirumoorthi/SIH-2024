@@ -16,7 +16,7 @@ export function InstutionsHeader(): React.JSX.Element {
   return (
     <Stack direction="row" spacing={3}>
         <Stack spacing={1} sx={{ flex: '1 1 auto' }}>
-          <Typography variant="h4">Instutions</Typography>
+          <Typography variant="h4">Institutions</Typography>
         </Stack>
         <div>
           <Button

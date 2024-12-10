@@ -43,7 +43,7 @@ export default function Page(): React.JSX.Element {
         <Traffic chartSeries={[63, 15, 22]} labels={['Desktop', 'Tablet', 'Phone']} sx={{ height: '100%' }} />
       </Grid>
       <Grid lg={4} md={6} xs={12}>
-        <LatestProducts
+        {/* <LatestProducts
           products={[
             {
               id: 'PRD-005',
@@ -77,10 +77,10 @@ export default function Page(): React.JSX.Element {
             },
           ]}
           sx={{ height: '100%' }}
-        />
+        /> */}
       </Grid>
       <Grid lg={8} md={12} xs={12}>
-        <LatestOrders
+        {/* <LatestOrders
           orders={[
             {
               id: 'ORD-007',
@@ -126,7 +126,7 @@ export default function Page(): React.JSX.Element {
             },
           ]}
           sx={{ height: '100%' }}
-        />
+        /> */}
       </Grid>
     </Grid>
   );

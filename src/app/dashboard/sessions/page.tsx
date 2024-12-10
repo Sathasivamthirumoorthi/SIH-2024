@@ -17,9 +17,9 @@ import type { Customer } from '@/components/dashboard/customer/customers-table';
 import { InstutionsFilters } from '@/components/dashboard/instution/instutions-filters';
 import { InstutionsHeader } from '@/components/dashboard/instution/instutions-header';
 import { InstutionsTable } from '@/components/dashboard/instution/instutions-table';
-import { SessionFilters } from '@/components/dashboard/session/session-filters';
-import { SessionHeader } from '@/components/dashboard/session/session-header';
-import { Session, SessionTable } from '@/components/dashboard/session/session-table';
+import { SessionFilters } from '@/components/dashboard/Session/Session-filters';
+import { SessionHeader } from '@/components/dashboard/Session/Session-header';
+import { Session, SessionTable } from '@/components/dashboard/Session/Session-table';
 
 export const metadata = { title: `Customers | Dashboard | ${config.site.name}` } satisfies Metadata;
 export const institutions: InstutionDetailsInterface[] = [
@@ -87,7 +87,7 @@ export default async function Page(): Promise<React.JSX.Element> {
   return (
     <Stack spacing={3}>
       <SessionHeader />
-      <SessionFilters />
+      {/* <SessionFilters /> */}
       <SessionTable
         count={paginatedInstutions.length}
         page={page}
