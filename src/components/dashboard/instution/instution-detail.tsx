@@ -10,6 +10,10 @@ interface InstutionDetailsProps {
   instution: InstutionDetailsInterface;
 }
 export function InstutionDetails({ instution }: InstutionDetailsProps): React.JSX.Element {
+  // React.useEffect(()=>{
+
+  // })
+
   return (
     <>
       <Stack>

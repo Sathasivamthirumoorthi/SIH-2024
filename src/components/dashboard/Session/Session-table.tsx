@@ -40,7 +40,7 @@ export function SessionTable({
   console.log(rows);
   const router = useRouter();
   const rowIds = React.useMemo(() => {
-    return rows.map((customer) => customer.uid);
+    return rows.map((session) => session.uid);
   }, [rows]);
 
   const { selectAll, deselectAll, selectOne, deselectOne, selected } = useSelection(rowIds);
@@ -72,7 +72,7 @@ export function SessionTable({
                 />
               </TableCell>
               <TableCell>Name</TableCell>
-              <TableCell>Trainer IDs</TableCell>
+              {/* <TableCell>Trainer IDs</TableCell>   */}
               <TableCell>Number of Slots</TableCell>
               <TableCell>Details</TableCell>
             </TableRow>
@@ -100,7 +100,7 @@ export function SessionTable({
                       <Typography variant="subtitle2">{session.name}</Typography>
                     </Stack>
                   </TableCell>
-                  <TableCell>{session.trainer_ids.join(', ')}</TableCell>
+                  {/* <TableCell>{session.trainer_ids.join(', ')}</TableCell> */}
                   <TableCell>{session.no_of_slots}</TableCell>
                   <TableCell>
                     <Button onClick={() => onHandleViewDetails(session.uid)} variant="contained">

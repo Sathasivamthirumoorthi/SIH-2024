@@ -18,7 +18,7 @@ export function SessionDetails({ session }: SessionDetailsProps): React.JSX.Elem
   console.log('got value', session);
   const [trainers, setTrainers] = React.useState<Trainers[]>([]);
   const [slots, setSlots] = React.useState<ViewSlot[]>([]);
-
+  const [Oes, setOes] = React.useState(0);
   const trainersRef = React.useRef<Trainers[]>([]);
   const slotsRef = React.useRef<ViewSlot[]>([]);
 
@@ -57,8 +57,14 @@ export function SessionDetails({ session }: SessionDetailsProps): React.JSX.Elem
       slotsRef.current = [...slotsRef.current, ...uniqueSlots];
       setSlots(slotsRef.current);
     };
+    const fetchOverallSessionEngagementScore = async () => {
+      // const overallSessionEngagementScore = await apiClient.get(`/sessions/${session.uid}/engagement`);
+      setOes(70);
+    };
+
     fetchTrainerDetails();
     fetchSlotDetails();
+    fetchOverallSessionEngagementScore();
   }, [session.trainer_ids, session.slots]);
 
   return (
@@ -86,7 +92,7 @@ export function SessionDetails({ session }: SessionDetailsProps): React.JSX.Elem
         )}
         <EngagementScore
           name="Avarage Engagement score of slots"
-          score={session?.average_eng_score === null ? JSON.stringify(0) : JSON.stringify(session?.average_eng_score)}
+          score={Oes === null ? JSON.stringify(0) : JSON.stringify(Oes)}
         />
         {/* {slotDetails.report && (
           <Typography variant="body2" color="textSecondary">
