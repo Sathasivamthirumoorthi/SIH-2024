@@ -27,11 +27,11 @@ async function fetchInstitutions(instutionId: string): Promise<InstutionDetailsI
 
 export default async function instution({ params }: { params: { instutionId: string } }): Promise<React.JSX.Element> {
   const path: string = params.instutionId; // asdasd
-  const institution = await fetchInstitutions(path);
 
   if (path === 'add') {
     return <AddInstitution />;
   }
+  const institution = await fetchInstitutions(path);
   // if (!isValidInstitution(path)) {
   //   redirect('/404');
   // }
