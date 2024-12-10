@@ -85,7 +85,7 @@ export default async function Page(): Promise<React.JSX.Element> {
   return (
     <Stack spacing={3}>
       <InstutionsHeader />
-      <InstutionsFilters />
+      {/* <InstutionsFilters /> */}
       <InstutionsTable
         count={paginatedInstutions.length}
         page={page}

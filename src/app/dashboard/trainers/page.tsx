@@ -216,7 +216,7 @@ async function fetchTrainers(): Promise<TrainersDetailsInterface[]> {
   return (
     <Stack spacing={3}>
       <TrainersHeader />
-      <TrainersFilters />
+      {/* <TrainersFilters /> */}
       <TrainersTable
         count={paginatedTrainers.length}
         page={page}
