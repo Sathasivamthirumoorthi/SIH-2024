@@ -4,6 +4,9 @@ export interface TrainersDetailsInterface {
   name: string;
   user_id: string;
   email: string;
+  sessions?: string;
+  slots?: string;
+  institution_id?: string;
 }
 export interface AddTrainerRequest {
   name: string;

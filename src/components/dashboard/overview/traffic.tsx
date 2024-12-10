@@ -22,32 +22,21 @@ export interface TrafficProps {
   chartSeries: number[];
   labels: string[];
   sx?: SxProps;
+  name?: string;
+  title?: string;
 }
 
-export function Traffic({ chartSeries, labels, sx }: TrafficProps): React.JSX.Element {
+export function Traffic({ chartSeries, labels, sx, name, title }: TrafficProps): React.JSX.Element {
   const chartOptions = useChartOptions(labels);
 
   return (
     <Card sx={sx}>
-      <CardHeader title="Traffic source" />
+      <CardHeader title={title} />
       <CardContent>
         <Stack spacing={2}>
           <Chart height={300} options={chartOptions} series={chartSeries} type="donut" width="100%" />
           <Stack direction="row" spacing={2} sx={{ alignItems: 'center', justifyContent: 'center' }}>
-            {chartSeries.map((item, index) => {
-              const label = labels[index];
-              const Icon = iconMapping[label];
-
-              return (
-                <Stack key={label} spacing={1} sx={{ alignItems: 'center' }}>
-                  {Icon ? <Icon fontSize="var(--icon-fontSize-lg)" /> : null}
-                  <Typography variant="h6">{label}</Typography>
-                  <Typography color="text.secondary" variant="subtitle2">
-                    {item}%
-                  </Typography>
-                </Stack>
-              );
-            })}
+            {name}
           </Stack>
         </Stack>
       </CardContent>

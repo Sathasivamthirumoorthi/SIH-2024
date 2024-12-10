@@ -5,6 +5,9 @@ export interface InstutionDetailsInterface {
   user_id: string;
   location: string;
   status: 'poor' | 'avarage' | 'excellent';
+  sessions?: string[];
+  // train : string[
+  trainers?: string[];
 }
 
 export interface AddInstitutionRequest {

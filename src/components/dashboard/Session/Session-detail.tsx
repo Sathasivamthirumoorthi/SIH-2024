@@ -41,13 +41,13 @@ export function SessionDetails({ session }: SessionDetailsProps): React.JSX.Elem
     };
     const fetchSlotDetails = async () => {
       const slotDetailsPromises = session.slots.map(async (slotId) => {
-        const slotDetail = await apiClient.get(`slots/${'30165ae1-c244-4551-b74a-b027f170a927'}`);
+        const slotDetail = await apiClient.get(`slots/${session.uid}`);
         return slotDetail.data; // Adjust this based on the API response structure
       });
 
       // Await all promises
       const slotDetails = await Promise.all(slotDetailsPromises);
-
+      console.log(slotDetails);
       // Filter out duplicate slots based on unique properties (e.g., title, date, etc.)
       const uniqueSlots = slotDetails.filter(
         (slot, index, self) => index === self.findIndex((s) => s.title === slot.title && s.date === slot.date)
@@ -58,8 +58,10 @@ export function SessionDetails({ session }: SessionDetailsProps): React.JSX.Elem
       setSlots(slotsRef.current);
     };
     const fetchOverallSessionEngagementScore = async () => {
-      // const overallSessionEngagementScore = await apiClient.get(`/sessions/${session.uid}/engagement`);
-      setOes(70);
+      try {
+        const overallSessionEngagementScore = await apiClient.get(`/sessions/${session.uid}/engagement`);
+        setOes(overallSessionEngagementScore.data.average_engagement_score);
+      } catch (error) {}
     };
 
     fetchTrainerDetails();

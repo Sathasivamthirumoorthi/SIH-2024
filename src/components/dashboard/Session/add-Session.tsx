@@ -87,7 +87,7 @@ export function AddSession(): React.JSX.Element {
   React.useEffect(() => {
     const fetchTrainerDetail = async () => {
       try {
-        const trainerDetail = await apiClient.get(`/trainers/institution/${'9a6a691b-1812-4591-b18d-c60ed25a3a42'}`);
+        const trainerDetail = await apiClient.get(`/trainers/institution/${user?.instutionId}`);
         // Handle the response as needed
         console.log(trainerDetail.data);
         setTrainers(trainerDetail.data || []);

@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
+import { TrainersDetailsInterface } from '@/models/TrainersDetails';
 import { Button } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
@@ -16,8 +17,10 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
+
 import { paths } from '@/paths';
 import { useSelection } from '@/hooks/use-selection';
+import { useUser } from '@/hooks/use-user';
 
 export interface Trainer {
   id: string;
@@ -31,7 +34,7 @@ export interface Trainer {
 interface TrainersTableProps {
   count?: number;
   page?: number;
-  rows?: Trainer[];
+  rows?: TrainersDetailsInterface[];
   rowsPerPage?: number;
 }
 
@@ -42,6 +45,8 @@ export function TrainersTable({
   rowsPerPage = 0,
 }: TrainersTableProps): React.JSX.Element {
   const router = useRouter();
+  const { user } = useUser();
+  console.log(rows);
   const rowIds = React.useMemo(() => {
     return rows.map((trainer) => trainer.id);
   }, [rows]);
@@ -50,8 +55,6 @@ export function TrainersTable({
 
   const selectedSome = (selected?.size ?? 0) > 0 && (selected?.size ?? 0) < rows.length;
   const selectedAll = rows.length > 0 && selected?.size === rows.length;
-
- 
 
   return (
     <Card>
@@ -74,10 +77,9 @@ export function TrainersTable({
               </TableCell>
               <TableCell>Name</TableCell>
               <TableCell>Email</TableCell>
-             
+
               <TableCell>Sessions</TableCell>
               <TableCell>Slots</TableCell>
-             
             </TableRow>
           </TableHead>
           <TableBody>
@@ -104,9 +106,6 @@ export function TrainersTable({
                 <TableCell>{row.email}</TableCell>
                 <TableCell>{Array.isArray(row.sessions) ? row.sessions.join(', ') : 'No sessions available'}</TableCell>
                 <TableCell>{Array.isArray(row.slots) ? row.slots.join(', ') : 'No slots available'}</TableCell>
-                
-
-                
               </TableRow>
             ))}
           </TableBody>
@@ -114,12 +113,12 @@ export function TrainersTable({
       </Box>
       <Divider />
       <TablePagination
-         component="div"
-         count={count}
-         page={page}
-         rowsPerPage={rowsPerPage}
-         onPageChange={() => {}}
-         onRowsPerPageChange={() => {}}
+        component="div"
+        count={count}
+        page={page}
+        rowsPerPage={rowsPerPage}
+        onPageChange={() => {}}
+        onRowsPerPageChange={() => {}}
       />
     </Card>
   );
