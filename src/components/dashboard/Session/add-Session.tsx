@@ -29,8 +29,8 @@ const validationSchema = Yup.object({
       Yup.object({
         title: Yup.string().required('Title is required'),
         date: Yup.string().required('date is required'),
-        fromTime: Yup.string().required('From time is required'),
-        toTime: Yup.string().required('To time is required'),
+        time_from: Yup.string().required('From time is required'),
+        time_to: Yup.string().required('To time is required'),
         trainer_id: Yup.string(),
       })
     )
@@ -46,13 +46,15 @@ export function AddSession(): React.JSX.Element {
   const handleFormSubmit = async (values: any) => {
     try {
       if (user?.instutionId) {
-        values.institutionId = user?.instutionId;
+        values.institution_id = user?.instutionId;
         const trainerId = values.trainer_id;
+        values.trainer_ids = [values.trainer_id];
         values.slots.forEach((slot: any) => {
           slot.trainer_id = trainerId;
         });
+        console.log('Form values --- :', values);
         // sessions/
-        await apiClient.post('/trainers/', values);
+        await apiClient.post('/sessions/', values);
         router.push(paths.dashboard.Sessions.overview);
         console.log('Form values:', values);
       }
@@ -122,7 +124,7 @@ export function AddSession(): React.JSX.Element {
         institutionId: '',
         trainer_id: '',
         no_of_slots: 0,
-        slots: [{ title: '', date: '', fromTime: '', toTime: '', trainer_id: '' }],
+        slots: [{ title: '', date: '', time_from: '', time_to: '', trainer_id: '' }],
       }}
       validationSchema={validationSchema}
       onSubmit={handleFormSubmit}
@@ -219,22 +221,22 @@ export function AddSession(): React.JSX.Element {
                                   <TextField
                                     fullWidth
                                     label="From Time"
-                                    name={`slots[${index}].fromTime`}
-                                    value={values.slots[index]?.fromTime || ''}
+                                    name={`slots[${index}].time_from`}
+                                    value={values.slots[index]?.time_from || ''}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
-                                    helperText={touched.slots?.[index]?.fromTime}
+                                    helperText={touched.slots?.[index]?.time_from}
                                   />
                                 </Grid>
                                 <Grid xs={12} md={6}>
                                   <TextField
                                     fullWidth
                                     label="To Time"
-                                    name={`slots[${index}].toTime`}
-                                    value={values.slots[index]?.toTime || ''}
+                                    name={`slots[${index}].time_to`}
+                                    value={values.slots[index]?.time_to || ''}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
-                                    helperText={touched.slots?.[index]?.toTime}
+                                    helperText={touched.slots?.[index]?.time_to}
                                   />
                                 </Grid>
                               </Grid>

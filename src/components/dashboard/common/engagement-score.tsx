@@ -6,7 +6,7 @@ import Stack from '@mui/material/Stack';
 import type { SxProps } from '@mui/material/styles';  
 import Typography from '@mui/material/Typography';
 import { ArrowUp as ArrowUpIcon } from '@phosphor-icons/react/dist/ssr/ArrowUp';
-
+ 
 export function EngagementScore({ score, name }: EngagementScoreProps): React.JSX.Element {
   const TrendIcon = ArrowUpIcon;
   const trendColor = 'var(--mui-palette-success-main)';
